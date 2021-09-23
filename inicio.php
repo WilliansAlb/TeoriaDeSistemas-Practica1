@@ -21,7 +21,7 @@ if (isset($_SESSION['usuario'])) {
         $stmt->close();
     }
     if ($_SESSION["tipo"] == "estudiante") {
-        $sql = "SELECT * FROM Asignaciones WHERE usuario = ?";
+        $sql = "SELECT *, a.fecha AS afecha, a.codigo AS acodigo FROM Asignaciones a, Curso c WHERE a.estudiante = ? AND a.curso = c.codigo ";
         if ($stmt = $mysqli->prepare($sql)) {
             $stmt->bind_param("s", $_SESSION["usuario"]);
             if ($stmt->execute()) {
@@ -76,19 +76,20 @@ if (isset($_SESSION['usuario'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado</title>
+    <title>Inicio</title>
     <link rel="stylesheet" href="estilos/estilos.css">
     <link rel="stylesheet" href="estilos/estilos2.css">
     <link rel="stylesheet" href="estilos/cuaderno.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="imagenes/png/011-school.png" />
     <link href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@200;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <nav>
         <div id="navbar">
-            <a href="registro.php">
+            <a href="inicio.php">
                 <img src="imagenes/png/011-school.png" alt="escuela" width="40px">ESCUELA
             </a>
             <span></span>
@@ -128,9 +129,30 @@ if (isset($_SESSION['usuario'])) {
                 <div id="cursos">
                     <?php if ($data) : ?>
                         <?php foreach ($data as $row) : ?>
-                            <div class="componente1">
-                                <h1><?php echo $row["nombre"] ?></h1>
+                            <div class="componente1 cuaderno_lineas">
+                                <h1><?php echo $row["codigo"] ?> - <?php echo $row["nombre"] ?> <span><a class="desasignate" onclick="desasignar(<?php echo $row['acodigo']; ?>,this)">DESASIGNAR</a></span></h1>
+                                <span><img style="width: 1.5rem" src="imagenes/png/046-library.png" alt="nivel">
+                                    <?php
+                                    if ($row["nivel"] == 0) :
+                                        echo "Principiante";
+                                    elseif ($row["nivel"] == 1) :
+                                        echo "Intermedio";
+                                    else :
+                                        echo "Avanzado";
+                                    endif;
+                                    ?>
+                                </span>
+                                <span><img style="width: 1.5rem" src="imagenes/png/019-teacher.png" alt="nivel">
+                                    <?php
+                                    echo $row["profesor"]; ?>
+                                </span>
+                                <hr>
+                                <br>
                                 <span><?php echo $row["descripcion"] ?></span>
+                                <br>
+                                <br>
+                                <hr>
+                                <span>Asignado el <?php echo $row["afecha"] ?> || Creado el <?php echo $row["fecha"] ?></span>
                             </div>
                         <?php endforeach ?>
                     <?php else : ?>
@@ -141,23 +163,23 @@ if (isset($_SESSION['usuario'])) {
                 </div>
                 <div id="explorar" style="display: none;">
                     <?php if ($cursos) : ?>
-                        <div class="componente1">
+                        <div class="componente1 cuaderno_lineas">
                             <label for="buscar">BUSCAR CURSO: </label>
                             <input type="text" id="buscar" onchange="buscando(this)" style="    width: -webkit-fill-available;">
                         </div>
                         <?php foreach ($cursos as $row) : ?>
-                            <div class="componente3">
+                            <div class="componente3 cuaderno_lineas">
                                 <div style="display: flex;flex-direction: column;">
-                                    <h1 class="curso_texto"><?php echo $row["codigo"] . " - " . $row["nombre"]; ?> <span><a class="asignate">ASIGNAR<img src="imagenes/png/007-notebook.png" alt="asignar"></a></span></h1>
+                                    <h1 class="curso_texto"><?php echo $row["codigo"] . " - " . $row["nombre"]; ?> <span><a class="asignate" onclick="asignar(<?php echo $row['codigo']; ?>,this)">ASIGNAR<img src="imagenes/png/007-notebook.png" alt="asignar"></a></span></h1>
                                     <span><img style="width: 1.5rem" src="imagenes/png/046-library.png" alt="nivel">
                                         <?php
-                                            if ($row["nivel"]==0):
-                                                echo "Principiante";
-                                            elseif ($row["nivel"]==1):
-                                                echo "Intermedio";
-                                            else:
-                                                echo "Avanzado";
-                                            endif;
+                                        if ($row["nivel"] == 0) :
+                                            echo "Principiante";
+                                        elseif ($row["nivel"] == 1) :
+                                            echo "Intermedio";
+                                        else :
+                                            echo "Avanzado";
+                                        endif;
                                         ?>
                                     </span>
                                     <br>
@@ -192,7 +214,7 @@ if (isset($_SESSION['usuario'])) {
                         </div>
                     <?php endif ?>
                 </div>
-                <div id="editar" class="edicion" style="display: none;">
+                <div id="editar" class="edicion cuaderno_lineas" style="display: none;">
                     <label for="nombres">Nombres:</label>
                     <input type="text" id="nombres" name="nombres" required value="<?php echo $nombres; ?>">
                     <label for="apellidos">Apellidos:</label>
@@ -212,7 +234,7 @@ if (isset($_SESSION['usuario'])) {
                     </span>
                     <label for="profesion">Profesion:</label>
                     <input type="text" id="profesion" name="profesion" required value="<?php echo $profesion; ?>">
-                    <button>EDITAR</button>
+                    <button onclick="editar_datos('<?php echo $_SESSION['tipo']; ?>')">EDITAR</button>
                 </div>
             <?php else : ?>
                 <div id="cursos_creados">
@@ -280,13 +302,26 @@ if (isset($_SESSION['usuario'])) {
                     </span>
                     <label for="profesion">Profesion:</label>
                     <input type="text" id="profesion" name="profesion" required value="<?php echo $profesion; ?>">
-                    <button style="margin-top:1em;">EDITAR</button>
+                    <button style="margin-top:1em;" onclick="editar_datos('<?php echo $_SESSION['tipo']; ?>')">EDITAR</button>
                 </div>
             <?php endif ?>
         </div>
     </div>
     <div style="/* float: right; */top: 40%;left: 38%;background-color: #bda8a8;padding: 2em;margin: 4em;border-radius: 1em;z-index: 10;position: fixed;display:none;" id="div_respuesta">
         <span id="server_respuesta">Area de creación de entidades</span>
+    </div>
+    <div id="oculto" class="oculto" style="display: none;">
+        <div id="confirmacion_asignacion" style="display:none;">
+            <span>¿Estás seguro de asignarte este curso?</span>
+            <h1 id="asignar_curso"></h1>
+            <button onclick="asignar_curso()">Sí</button><button onclick="this.parentNode.style.display='none';this.parentNode.parentNode.style.display='none';code=-1;">No</button>
+        </div>
+        <div id="confirmacion_desasignacion" style="display:none;background-color:red;">
+            <span>¿Estás seguro de desasignarte este curso?</span>
+            <h1 id="desasignar_curso"></h1>
+            <button onclick="desasignar_curso()">Sí</button><button onclick="this.parentNode.style.display='none';this.parentNode.parentNode.style.display='none';code2=-1;">No</button>
+        </div>
+        <div id="confirmacion_respuesta" style="display: none;"></div>
     </div>
     <script src="scripts/inicio.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
