@@ -1,44 +1,46 @@
-.contenedor2{
+.contenedor2 {
     width: fit-content;
     margin: auto;
     background-color: white;
     padding: 3em;
     border-radius: 0 0 2em 2em;
 }
-.contenedor2 center img{
+
+.contenedor2 center img {
     z-index: 4;
     width: 50px;
 }
-.cuerpo{
+
+.cuerpo {
     margin: 2em auto;
     display: grid;
-    grid-template-columns: 25% 75%;
-    width: 80%;
+    grid-template-columns: 15% 85%;
+    width: 60%;
 }
 
-.opciones{
+.opciones {
     display: flex;
     flex-direction: column;
 }
 
-.opciones span{
+.opciones span {
     text-align: center;
     background-color: white;
     border: none;
     padding: 2em;
 }
 
-.opciones span:hover{
+.opciones span:hover {
     background-color: skyblue;
     cursor: pointer;
 }
 
-.seleccionado{
+.seleccionado {
     background-color: skyblue !important;
     border-right: none !important;
 }
 
-.contenidos{
+.contenidos {
     width: 100%;
     height: 100%;
     background: skyblue;
@@ -46,15 +48,33 @@
     border: none;
 }
 
-.componente1{
+.componente1 {
     margin: 2em;
     background-color: white;
     padding: 3em;
     border-radius: 2em;
-
 }
 
-.edicion{
+.componente3 {
+    margin: 2em;
+    background-color: white;
+    padding: 3em;
+    border-radius: 2em;
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
+.datos_profesor {
+    height: fit-content;
+    background-color: turquoise;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid orange;
+    border-radius: 2em;
+}
+
+.edicion {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,13 +86,13 @@
     row-gap: 0.5em;
 }
 
-.inter{
+.inter {
     background-color: skyblue;
     border-radius: 1em;
     padding-left: 10px;
 }
 
-.inter a{
+.inter a {
     border: none;
     width: fit-content;
     height: fit-content;
@@ -80,6 +100,24 @@
     color: yellow;
 }
 
-.inter a:hover{
+.inter a:hover {
     cursor: pointer;
+}
+
+.asignate{
+    color: skyblue;
+    font-size: 1.5rem;
+    padding: 0.3rem;
+}
+
+.asignate:hover{
+    background-color: skyblue;
+    color: white;
+    cursor: pointer;
+    border-radius: 1em;
+}
+
+.asignate img{
+    width: 1.5rem;
+    vertical-align: middle;
 }

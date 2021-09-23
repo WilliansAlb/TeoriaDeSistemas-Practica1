@@ -1,1 +1,2 @@
 # SISTEMA DE CURSOS
+Práctica que consiste en idear un sistema que pueda crear usuarios del tipo estudiante o del tipo profesor, siendo que como estudiante solo podrás tener las opciones de asignarte a cursos, y como profesor solo tendrás la opción de crear nuevo curso.

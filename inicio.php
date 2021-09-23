@@ -50,7 +50,7 @@ if (isset($_SESSION['usuario'])) {
         }
     }
 
-    $sql = "SELECT * FROM Curso";
+    $sql = "SELECT codigo,nombre,nivel,descripcion,areas,fecha,nombres,profesor,apellidos,intereses,profesion FROM Curso c, Usuarios u WHERE c.profesor = u.usuario";
     if ($stmt = $mysqli->prepare($sql)) {
         if ($stmt->execute()) {
             // store result
@@ -118,8 +118,8 @@ if (isset($_SESSION['usuario'])) {
                 <span onclick="mostrando(this,1,true)">EXPLORA</span>
                 <span onclick="mostrando(this,2,true)">PERFIL</span>
             <?php else : ?>
-                <span class="seleccionado" onclick="mostrando(this,0,false)">TUS CURSOS</span>
-                <span onclick="mostrando(this,1,false)">CREA</span>
+                <span class="seleccionado" onclick="mostrando(this,0,false)">CURSOS CREADOS</span>
+                <span onclick="mostrando(this,1,false)">CREA CURSO</span>
                 <span onclick="mostrando(this,2,false)">PERFIL</span>
             <?php endif ?>
         </div>
@@ -127,14 +127,12 @@ if (isset($_SESSION['usuario'])) {
             <?php if ($_SESSION['tipo'] == 'estudiante') : ?>
                 <div id="cursos">
                     <?php if ($data) : ?>
-                        <ul>
-                            <?php foreach ($data as $row) : ?>
-                                <div class="componente1">
-                                    <h1><?php echo $row["nombre"] ?></h1>
-                                    <span><?php echo $row["descripcion"] ?></span>
-                                </div>
-                            <?php endforeach ?>
-                        </ul>
+                        <?php foreach ($data as $row) : ?>
+                            <div class="componente1">
+                                <h1><?php echo $row["nombre"] ?></h1>
+                                <span><?php echo $row["descripcion"] ?></span>
+                            </div>
+                        <?php endforeach ?>
                     <?php else : ?>
                         <div class="componente1">
                             <span>Aún no te has asignado a ningún curso</span>
@@ -143,20 +141,52 @@ if (isset($_SESSION['usuario'])) {
                 </div>
                 <div id="explorar" style="display: none;">
                     <?php if ($cursos) : ?>
-                        <ul>
-                            <?php foreach ($cursos as $row) : ?>
-                                <div class="componente1">
-                                    <h1><?php echo $row["nombre"] ?></h1>
-                                    <span><?php echo $row["descripcion"] ?></span>
-                                </div>
-                            <?php endforeach ?>
-                        </ul>
-                    <?php else : ?>
                         <div class="componente1">
                             <label for="buscar">BUSCAR CURSO: </label>
-                            <input type="text" id="buscar" style="    width: -webkit-fill-available;">
+                            <input type="text" id="buscar" onchange="buscando(this)" style="    width: -webkit-fill-available;">
                         </div>
-
+                        <?php foreach ($cursos as $row) : ?>
+                            <div class="componente3">
+                                <div style="display: flex;flex-direction: column;">
+                                    <h1 class="curso_texto"><?php echo $row["codigo"] . " - " . $row["nombre"]; ?> <span><a class="asignate">ASIGNAR<img src="imagenes/png/007-notebook.png" alt="asignar"></a></span></h1>
+                                    <span><img style="width: 1.5rem" src="imagenes/png/046-library.png" alt="nivel">
+                                        <?php
+                                            if ($row["nivel"]==0):
+                                                echo "Principiante";
+                                            elseif ($row["nivel"]==1):
+                                                echo "Intermedio";
+                                            else:
+                                                echo "Avanzado";
+                                            endif;
+                                        ?>
+                                    </span>
+                                    <br>
+                                    <span><?php echo $row["descripcion"] ?></span>
+                                    <br>
+                                    <div>
+                                        <span>Etiquetas:
+                                            <?php
+                                            $array1 = explode("-", $row["areas"]);
+                                            foreach ($array1 as $el) :
+                                                echo "<span class='inter'><span class='etiqueta'>" . $el . "</span></span>";
+                                            endforeach
+                                            ?>
+                                        </span>
+                                    </div>
+                                    <hr>
+                                    <span>Publicado el <?php echo $row["fecha"] ?></span>
+                                </div>
+                                <div class="datos_profesor">
+                                    <h3>Profesor</h3>
+                                    <img src="imagenes/png/019-teacher.png" alt="maestro" width="30%">
+                                    <span><span><?php echo $row["nombres"] ?></span> <span><?php echo $row["apellidos"] ?></span></span>
+                                    <span style="font-size: 0.8em;"><?php echo $row["profesor"] ?></span>
+                                    <hr>
+                                    <span><?php echo $row["profesion"] ?></span>
+                                </div>
+                            </div>
+                        <?php endforeach ?>
+                    <?php else : ?>
                         <div class="componente1">
                             <span>Aún no se han creado cursos</span>
                         </div>
@@ -187,26 +217,24 @@ if (isset($_SESSION['usuario'])) {
             <?php else : ?>
                 <div id="cursos_creados">
                     <?php if ($data) : ?>
-                        <ul>
-                            <?php foreach ($data as $row) : ?>
-                                <div class="componente1">
-                                    <h1><?php echo $row["nombre"] ?></h1>
-                                    <span><?php echo $row["descripcion"] ?></span>
-                                    <hr>
-                                    <div>
-                                        <span>Etiquetas:
-                                            <?php
-                                            $array1 = explode("-", $row["areas"]);
-                                            foreach ($array1 as $el) :
-                                                echo "<span class='inter'><span class='etiqueta'>" . $el . "</span></span>";
-                                            endforeach
-                                            ?>
-                                        </span>
-                                    </div>
-                                    <span><?php echo $row["fecha"] ?></span>
+                        <?php foreach ($data as $row) : ?>
+                            <div class="componente1">
+                                <h1><?php echo $row["nombre"] ?></h1>
+                                <span><?php echo $row["descripcion"] ?></span>
+                                <hr>
+                                <div>
+                                    <span>Etiquetas:
+                                        <?php
+                                        $array1 = explode("-", $row["areas"]);
+                                        foreach ($array1 as $el) :
+                                            echo "<span class='inter'><span class='etiqueta'>" . $el . "</span></span>";
+                                        endforeach
+                                        ?>
+                                    </span>
                                 </div>
-                            <?php endforeach ?>
-                        </ul>
+                                <span><?php echo $row["fecha"] ?></span>
+                            </div>
+                        <?php endforeach ?>
                     <?php else : ?>
                         <div class="componente1">
                             <span>Aún no has creado cursos</span>

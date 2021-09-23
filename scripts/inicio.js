@@ -123,3 +123,24 @@ function crear() {
         alert("colocale areas de interes");
     }
 }
+
+function buscando(input){
+    var els = document.querySelectorAll(".curso_texto");
+    var ets = document.querySelectorAll(".etiqueta");
+    for(let i = 0; i < els.length; i++){
+        if (els[i].textContent.toLowerCase().includes(input.value.toLowerCase())){
+            var p1 = els[i].parentNode.parentNode;
+            p1.style.display = "";
+        } else {
+            var p1 = els[i].parentNode.parentNode;
+            p1.style.display = "none";
+        }
+    }
+    console.log("llega acá "+ets.length);
+    for(let e = 0; e < ets.length; e++){
+        if (ets[e].textContent.toLowerCase().includes(input.value.toLowerCase())){
+            var p1 = ets[e].parentNode.parentNode.parentNode.parentNode.parentNode;
+            p1.style.display = "";
+        }
+    }
+}
