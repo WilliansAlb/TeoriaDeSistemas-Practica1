@@ -18,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Attempt to execute the prepared statement
         if ($stmt->execute()) {
             // Redirect to login page
-            $respuesta = "<span>Tu curso ha sido editado exitosamente</span><a href='http://localhost/Teoria/inicio.php'>IR A LOGIN</a>";
+            $respuesta = "<span>Tu curso ha sido editado exitosamente</span><hr><a href='http://localhost/Teoria/inicio.php'>ACEPTAR</a>";
         } else {
-            $respuesta = "<span>Ocurrio un error inesperado al crear el usuario</span>";
+            $respuesta = "<span>Ocurrio un error inesperado al crear el usuario</span><hr><a href='http://localhost/Teoria/inicio.php'>ACEPTAR</a>";
         }
         // Close statement
         $stmt->close();
