@@ -26,26 +26,26 @@ function agregarInteres2() {
     document.getElementById("intereses2").innerHTML += "<span class='inter'><span class='val2'>" + ti + "</span><a onclick='eliminar(this)''>X</a></span>";
 }
 
-function agregarInteres3() {
-    var ti = $("#text_interes3").val();
+function agregarInteres3(codigo) {
+    var ti = $("#text_interes3"+codigo).val();
     if (ti == '') {
         return;
     }
-    var actuales = document.querySelectorAll('.val3');
+    var actuales = document.querySelectorAll('.val3'+codigo);
     for (let i = 0; i < actuales.length; i++) {
         if (actuales[i].textContent == ti) {
             return;
         }
     }
-    $("#text_interes3").val("")
-    document.getElementById("intereses3").innerHTML += "<span class='inter'><span class='val3'>" + ti + "</span><a onclick='eliminar(this)''>X</a></span>";
+    $("#text_interes3"+codigo).val("")
+    document.getElementById("intereses3"+codigo).innerHTML += "<span class='inter'><span class='val3"+codigo+"'>" + ti + "</span><a onclick='eliminar(this)''>X</a></span>";
 }
 
 function editando_curso(codigo) {
-    var nom = document.getElementById("nombre_c1").value;
-    var nivel = document.getElementById("nivel_c1").value;
-    var actuales = document.querySelectorAll('.val3');
-    var descripcion = document.getElementById("descripcion_c1").value;
+    var nom = document.getElementById("nombre_c"+codigo).value;
+    var nivel = document.getElementById("nivel_c"+codigo).value;
+    var actuales = document.querySelectorAll('.val3'+codigo);
+    var descripcion = document.getElementById("descripcion_c"+codigo).value;
     var areas = "";
     if (nom == "") {
         alert("Ingresa el nombre del curso");
