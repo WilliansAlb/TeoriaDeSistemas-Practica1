@@ -26,6 +26,66 @@ function agregarInteres2() {
     document.getElementById("intereses2").innerHTML += "<span class='inter'><span class='val2'>" + ti + "</span><a onclick='eliminar(this)''>X</a></span>";
 }
 
+function agregarInteres3() {
+    var ti = $("#text_interes3").val();
+    if (ti == '') {
+        return;
+    }
+    var actuales = document.querySelectorAll('.val3');
+    for (let i = 0; i < actuales.length; i++) {
+        if (actuales[i].textContent == ti) {
+            return;
+        }
+    }
+    $("#text_interes3").val("")
+    document.getElementById("intereses3").innerHTML += "<span class='inter'><span class='val3'>" + ti + "</span><a onclick='eliminar(this)''>X</a></span>";
+}
+
+function editando_curso(codigo) {
+    var nom = document.getElementById("nombre_c1").value;
+    var nivel = document.getElementById("nivel_c1").value;
+    var actuales = document.querySelectorAll('.val3');
+    var descripcion = document.getElementById("descripcion_c1").value;
+    var areas = "";
+    if (nom == "") {
+        alert("Ingresa el nombre del curso");
+        return;
+    }
+    if (actuales.length > 0) {
+        for (let i = 0; i < actuales.length; i++) {
+            if (i != actuales.length - 1) {
+                areas += actuales[i].textContent + "-";
+            } else {
+                areas += actuales[i].textContent;
+            }
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost/Teoria/servers/editarCurso.php',
+            data: { nombre: nom, nivel: nivel, areas: areas, descripcion: descripcion, codigo:codigo},
+            beforeSend: function () {
+                console.log("Enviar datos");
+            },
+            complete: function (data) {
+                console.log("Completados datos");
+            },
+            success: function (data) {
+                if (data == 'REDIRECCION') {
+                    window.location = "http://localhost/Teoria/inicio.php";
+                } else {
+                    $("#server_respuesta").html(data);
+                    $("#div_respuesta").fadeIn();
+                }
+            },
+            error: function (data) {
+                alert("Problemas al tratar de enviar el formulario");
+            }
+        });
+    } else {
+        alert("colocale areas de interes");
+    }
+}
+
 function eliminar(a) {
     var spa = a.parentNode;
     var pa = spa.parentNode;

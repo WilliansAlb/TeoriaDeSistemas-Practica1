@@ -240,9 +240,20 @@ if (isset($_SESSION['usuario'])) {
                 <div id="cursos_creados">
                     <?php if ($data) : ?>
                         <?php foreach ($data as $row) : ?>
-                            <div class="componente1">
-                                <h1><?php echo $row["nombre"] ?></h1>
-                                <span><?php echo $row["descripcion"] ?></span>
+                            <div class="componente1" style="display: flex;flex-direction:column;row-gap:0.2em;">
+                                <h1><?php echo $row["nombre"]; ?></h1><button onclick="this.parentNode.style.display='none'; document.getElementById('editando_curso').style.display = 'flex';">EDITAR</button>
+                                <span><img style="width: 1.5rem" src="imagenes/png/046-library.png" alt="nivel">
+                                    <?php
+                                    if ($row["nivel"] == 0) :
+                                        echo "Principiante";
+                                    elseif ($row["nivel"] == 1) :
+                                        echo "Intermedio";
+                                    else :
+                                        echo "Avanzado";
+                                    endif;
+                                    ?>
+                                </span>
+                                <span><?php echo $row["descripcion"]; ?></span>
                                 <hr>
                                 <div>
                                     <span>Etiquetas:
@@ -255,6 +266,39 @@ if (isset($_SESSION['usuario'])) {
                                     </span>
                                 </div>
                                 <span><?php echo $row["fecha"] ?></span>
+                            </div>
+                            <div class="componente1" style="display: none;flex-direction:column;row-gap:0.2em;" id="editando_curso">
+                                <label for="nombre_c1">Nombre:</label>
+                                <input type="text" name="nombre_c1" id="nombre_c1" value="<?php echo $row['nombre']; ?>">
+                                <label for="nivel_c1">Nivel:</label>
+                                <select name="nivel_c1" id="nivel_c1">
+                                    <option value="0" <?php if ($row["nivel"] == 0) :
+                                                            echo "selected";
+                                                        endif; ?>>Principiante</option>
+                                    <option value="1" <?php if ($row["nivel"] == 1) :
+                                                            echo "selected";
+                                                        endif; ?>>Intermedio</option>
+                                    <option value="2" <?php if ($row["nivel"] == 2) :
+                                                            echo "selected";
+                                                        endif; ?>>Avanzado</option>
+                                </select>
+                                <label for="descripcion_c1">Descripcion:</label>
+                                <textarea name="descripcion_c1" id="descripcion_c1" cols="30" rows="10"><?php echo $row["descripcion"]; ?></textarea>
+                                <label for="text_interes3">Etiquetas: </label>
+                                <div>
+                                    <input type="text" id="text_interes3">
+                                    <button onclick="agregarInteres3()">AGREGAR</button>
+                                </div>
+                                <span id="intereses3">
+                                    <?php
+                                    $array1 = explode("-", $row["areas"]);
+                                    foreach ($array1 as $el) :
+                                        echo "<span class='inter'><span class='val3'>" . $el . "</span><a onclick='eliminar(this)''>X</a></span>";
+                                    endforeach
+                                    ?>
+                                </span>
+                                <button onclick="editando_curso(<?php echo $row['codigo'];?>)">EDITAR</button>
+                                <a href="inicio.php">CANCELAR</a>
                             </div>
                         <?php endforeach ?>
                     <?php else : ?>
